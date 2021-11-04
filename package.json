@@ -1,0 +1,25 @@
+{
+  "name": "hapi-node-14-example",
+  "version": "1.0.0",
+  "description": "Hapi js test with node 14",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aaestrada/hapi-node-14-example.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "dependencies": {
+    "@hapi/hapi": "^20.2.1",
+    "hapi-pino": "^8.5.0"
+  }
+}
