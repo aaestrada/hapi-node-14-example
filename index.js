@@ -1,7 +1,6 @@
 'use strict';
 
 const Hapi = require('@hapi/hapi');
-const Pino = require('hapi-pino');
 const getResponse = [
     {string: 'string1', number: 1, boolean: true},
     {string: 'string2', number: 2, boolean: false},
@@ -21,10 +20,14 @@ const init = async () => {
             return h.response(getResponse);
         }
     });
-    
+
     await server.register({
-        plugin: Pino,
-        options: {}
+        plugin: require('hapi-pino'),
+        options: {
+          prettyPrint: process.env.NODE_ENV !== 'production',
+          // Redact Authorization headers, see https://getpino.io/#/docs/redaction
+          redact: ['req.headers.authorization']
+        }
       });
 
     await server.start();
