@@ -3,12 +3,9 @@
 // see docs https://github.com/pinojs/pino-pretty *dev
 const Hapi = require('@hapi/hapi');
 const Pino = require('hapi-pino');
-const SonicBoom = require('sonic-boom/index.js');
-// const sonic = new SonicBoom({
-//   dest: './pino-logs/node_trace.1.log',
-//   append: true,
-//   mkdir: true
-// });
+const Path = require('path');
+const { join } = require('path');
+const SonicBoom = require('sonic-boom');
 
 const getResponse = [
   {string: 'string1', number: 1, boolean: true},
@@ -28,9 +25,17 @@ async function start () {
     method: 'GET',
     path: '/items',
     handler: async function (request, h) {
-      return h.response(getResponse);
+    // test sonicBoob library works
+    // const sonic = new SonicBoom({
+    //   dest: './pino-logs/node_trace.1.log',
+    //   append: true,
+    //   mkdir: true
+    // });
+    return h.response(getResponse);
     }
   })
+  const tmpDir = Path.join(__dirname, '.tmp_' + Date.now())
+  const destination = join(tmpDir, 'output')
 
   await server.register({
     plugin: Pino,
@@ -49,7 +54,9 @@ async function start () {
           timestampKey: "time",
           translateTime: true,
           singleLine: true,
-          destination: 1
+          mkdir: true,
+          append: false, //the next line is breaking the app
+          // destination: new SonicBoom({ dest: destination, async: true, mkdir: true, append: true }),
         }
       }
     }
