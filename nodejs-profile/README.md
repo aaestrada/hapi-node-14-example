@@ -12,16 +12,18 @@ Step by step configuration:
 
     `clinic doctor --autocannon [ /items ] -- node  ./index`
 
-![Screen Shot 2021-10-28 at 17 21 38](https://user-images.githubusercontent.com/88118994/139353414-e7983dcd-59e3-4acd-9b96-a4f7df403f11.png)
+![Screen Shot 2021-11-04 at 9 56 26](https://user-images.githubusercontent.com/88118994/140384214-e81a2898-d163-461f-8a1d-051f243be169.png)
+
 
 4. We can create a Flame profile with a command that is the same as for Doctor, but swapping flame in for doctor:
 
     `clinic flame --on-port 'autocannon localhost:$PORT/items' -- node ./index` 
 
-![Screen Shot 2021-10-28 at 17 33 23](https://user-images.githubusercontent.com/88118994/139354292-31cca1b2-16fc-442b-881f-63a72e6b9d83.png)
+![Screen Shot 2021-11-04 at 9 57 26](https://user-images.githubusercontent.com/88118994/140384414-c445f678-2383-4a59-8086-c074a32f16a0.png)
+
 
 5. We can create a Bubbleprof profile with a command that is the same as for Doctor, but swapping bubbleprof in for doctor: 
 
     `clinic bubbleprof --on-port 'autocannon localhost:$PORT/items' -- node  ./index` 
 
-![Screen Shot 2021-10-28 at 17 25 55](https://user-images.githubusercontent.com/88118994/139353747-1c97dd6d-9a90-41d0-9666-4ec9aeb0f843.png)
+![Screen Shot 2021-11-04 at 9 58 41](https://user-images.githubusercontent.com/88118994/140384623-fc8a5d54-5fc6-405b-92eb-689db7fb3112.png)
