@@ -3,6 +3,13 @@
 // see docs https://github.com/pinojs/pino-pretty *dev
 const Hapi = require('@hapi/hapi');
 const Pino = require('hapi-pino');
+const SonicBoom = require('sonic-boom/index.js');
+// const sonic = new SonicBoom({
+//   dest: './pino-logs/node_trace.1.log',
+//   append: true,
+//   mkdir: true
+// });
+
 const getResponse = [
   {string: 'string1', number: 1, boolean: true},
   {string: 'string2', number: 2, boolean: false},
@@ -35,15 +42,14 @@ async function start () {
       transport: {
         target: 'pino-pretty',
         options: {
-          "colorize": true,
-          "minimumLevel": "info",
-          "levelFirst": true,
-          "messageFormat": true,
-          "timestampKey": "time",
-          "translateTime": true,
-          "ignore": "/items",
-          "singleLine": true,
-          "destination": 1
+          colorize: true,
+          minimumLevel: "info",
+          levelFirst: true,
+          messageFormat: true,
+          timestampKey: "time",
+          translateTime: true,
+          singleLine: true,
+          destination: 1
         }
       }
     }
