@@ -2,10 +2,11 @@
 // see docs https://github.com/pinojs/pino/blob/master/docs/pretty.md *prod
 // see docs https://github.com/pinojs/pino-pretty *dev
 const Hapi = require('@hapi/hapi');
+// manage logs
 const Pino = require('hapi-pino');
+const sonic = require('sonic-boom')
 const Path = require('path');
 const { join } = require('path');
-const SonicBoom = require('sonic-boom');
 
 const getResponse = [
   {string: 'string1', number: 1, boolean: true},
@@ -35,7 +36,7 @@ async function start () {
     }
   })
   const tmpDir = Path.join(__dirname, '.tmp_' + Date.now())
-  const destination = join(tmpDir, 'output')
+  const destination = join(tmpDir, 'output');
 
   await server.register({
     plugin: Pino,
@@ -55,8 +56,13 @@ async function start () {
           translateTime: true,
           singleLine: true,
           mkdir: true,
-          append: false, //the next line is breaking the app
-          // destination: new SonicBoom({ dest: destination, async: true, mkdir: true, append: true }),
+          append: true, //the next line is breaking the app
+          destination: new sonic({
+            dest: destination || 1,
+            append: true,
+            mkdir: true,
+            sync: true
+          })
         }
       }
     }
