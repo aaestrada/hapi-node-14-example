@@ -4,12 +4,11 @@
 const Hapi = require("@hapi/hapi");
 const Pino = require("hapi-pino");
 const noir = require("pino-noir");
-const SonicBoom = require("sonic-boom/index.js");
-// const sonic = new SonicBoom({
-//   dest: './pino-logs/node_trace.1.log',
-//   append: true,
-//   mkdir: true
-// });
+const path = require('path')
+
+const { join } = require('path')
+const fs = require('fs');
+const SonicBoom = require('sonic-boom');
 
 const getResponse = [
   { string: "string1", number: 1, boolean: true },
@@ -17,6 +16,7 @@ const getResponse = [
 ];
 
 async function start() {
+
   // Create a server with a host and port
   const server = Hapi.server({
     host: "localhost",
@@ -24,48 +24,54 @@ async function start() {
     debug: false // disable Hapi debug console logging
   });
 
+  // Disable pino warnings
+  process.removeAllListeners('warning')
+
   // Add the route
   server.route({
     method: "GET",
     path: "/items",
     options: {
+      log: { collect: true },
       cache: { expiresIn: 5000 },
       handler: async function (request, h) {
         try {
-          server.log("GET_items", getResponse);
-          return getResponse;
+          // you can also use a pino instance, which will be faster
+          request.logger.info('GET_items', getResponse)
+          return h.response(getResponse);
         } catch (err) {
-          return server.log("error", err);
+          return request.logger.error('GET_error', err)
         }
       }
     }
   });
 
-  // func =
-
-  // const stream = sink(func)
+  const tmpDir = path.join(__dirname, '.tmp_' + Date.now())
+  const destination = join(tmpDir, 'output')
 
   await server.register({
     plugin: Pino,
     options: {
-      // mergeHapiLogData: true,
-      level: "debug",
+      mergeHapiLogData: true,
+      level: process.env.LOG_LEVEL || 'info',
       ignorePaths: ["/health"],
       ignoreTags: ["info"],
       tags: { GET_items: "info" },
-      serializers: noir(["key", "path.to.key", "check.*", "also[*]"], "Ssshh!"),
+      serializers: noir(["key", "path.to.key", "check.*", "also[*]"], "***!"),
       logEvents: ["response", "error"],
+      redact: {
+        paths: ['req.headers', 'payload.user.password', 'payload.file'],
+        remove: false
+      },
       // ignoredEventTags: { log: ['SERVER_INFO', 'TEST'], request: ['SERVER_INFO', 'TEST'] },
       transport: {
         target: "pino-pretty",
         options: {
-          colorize: true,
-          tags: { GET_items: "info" },
-          timestampKey: "time", // --timestampKey
-          translateTime: false, // --translateTime
-          // singleLine: true,
-          hideObject: true, // enabled in production
-          destination: 1
+          singleLine: false,
+          colorize: false,
+          mkdir: true,
+          append: false,
+          destination: `logs/${destination}/logs.log`,
         }
       }
     }

@@ -19,7 +19,8 @@
     "npm": ">=6.0.0"
   },
   "dependencies": {
-    "@hapi/hapi": "^20.2.1"
+    "@hapi/hapi": "^20.2.1",
+    "sonic-boom": "^2.2.1"
   },
   "devDependencies": {
     "hapi-pino": "^9.0.0",
