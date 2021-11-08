@@ -3,6 +3,7 @@
 // see docs https://github.com/pinojs/pino-pretty *dev
 const Hapi = require('@hapi/hapi');
 const Pino = require('hapi-pino');
+const noir = require('pino-noir');
 const SonicBoom = require('sonic-boom/index.js');
 // const sonic = new SonicBoom({
 //   dest: './pino-logs/node_trace.1.log',
@@ -27,35 +28,51 @@ async function start () {
   server.route({
     method: 'GET',
     path: '/items',
-    handler: async function (request, h) {
-      return h.response(getResponse);
+    options: {
+        cache: { expiresIn: 5000 },
+        handler: async function (request, h) {
+          try {
+            server.log('GET_items',getResponse)
+            return getResponse;
+        }
+        catch (err) {
+            return server.log('error', err)
+        }
+        }
     }
-  })
+  });
+
+  // func = 
+
+  // const stream = sink(func)
 
   await server.register({
     plugin: Pino,
     options: {
-      logPayload: true,
-      mergeHapiLogData: true,
-      ignorePaths: ['/alive.txt', '/private'],
-      ignoreFunc: (options, request) => request.path.startsWith('/private'),
+      // mergeHapiLogData: true,
+      level: 'debug',
+      ignorePaths: ['/health'],
+      ignoreTags: ['info'],
+      tags: {GET_items: 'info'},
+      serializers: noir(['key', 'path.to.key', 'check.*', 'also[*]'], 'Ssshh!'),
+      logEvents: ['response', 'error' ],
+      // ignoredEventTags: { log: ['SERVER_INFO', 'TEST'], request: ['SERVER_INFO', 'TEST'] },
       transport: {
         target: 'pino-pretty',
         options: {
           colorize: true,
-          minimumLevel: "info",
-          levelFirst: true,
-          messageFormat: true,
-          timestampKey: "time",
-          translateTime: true,
-          singleLine: true,
+          tags: {GET_items: 'info'},
+          timestampKey: 'time', // --timestampKey
+          translateTime: false, // --translateTime
+          // singleLine: true,
+          hideObject: true, // enabled in production
           destination: 1
         }
       }
     }
   });
   await server.start();
-  server.log(['info'], `server running: ${server.info.uri}/items`);
+  server.log(['SERVER_INFO'], `server running: ${server.info.uri}/items`);
   return server
 }
 
