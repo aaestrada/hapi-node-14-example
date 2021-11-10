@@ -67,10 +67,12 @@ async function start() {
     {
       level: 'info',
       target: 'pino-pretty',
-      ignorePaths: ['/favicon.ico'],
-      logRequestComplete: false,
       options: {
           singleLine: true,
+          ignorePaths: ['/favicon.ico'],
+          logRequestComplete: false,
+          append: true,
+          mkdir: true,
           destination: 'logs/.info.log'
       }
     },
